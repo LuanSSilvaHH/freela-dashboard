@@ -14,3 +14,5 @@ main{padding-top:46px;max-width:1480px}aside{padding:34px 22px}.brand>strong{bor
 .authBox small{color:#789786;letter-spacing:.14em}.authBox h1{font-size:28px;margin:10px 0 8px}.authBox p{color:#919a95;margin:0 0 26px}
 .authBox label{display:grid;gap:7px;margin:14px 0;color:#b9c0bc;font-size:13px}.authBox input{background:#111312;border:1px solid #343936;color:#fff;padding:12px;outline:none}
 .authBox input:focus{border-color:#789786}.authPrimary,.authSecondary{width:100%;padding:12px;margin-top:10px;border:1px solid #789786;cursor:pointer}.authPrimary{background:#789786;color:#101211;font-weight:700}.authSecondary{background:transparent;color:#cbd2ce}.authMsg{font-size:13px;color:#c7d7ce;margin:10px 0}
+
+.areaFilter{display:flex;align-items:center;gap:10px;margin:16px 0 4px}.areaFilter span{font-size:12px;color:#8f9993;text-transform:uppercase;letter-spacing:.08em}.areaFilter select,.areaInput{background:#151716;border:1px solid #343936;color:#d8dedb;padding:8px 10px;outline:none}.areaFilter select:focus,.areaInput:focus{border-color:#789786}.areaInput{min-width:140px;width:100%}
