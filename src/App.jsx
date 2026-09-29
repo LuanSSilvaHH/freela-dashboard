@@ -15,6 +15,68 @@ import {
 } from "lucide-react";
 import { supabase } from "./supabase";
 import "./App.css";
+const defaultColumnWidths = {
+  empresa: 190,
+  cidade: 120,
+  area: 170,
+  status: 150,
+  valor: 105,
+  recebido: 115,
+  criado: 145,
+  atualizado: 145,
+  proxima: 190,
+  acoes: 90,
+};
+
+const columnDefs = [
+  ["empresa", "EMPRESA"],
+  ["cidade", "CIDADE"],
+  ["area", "ÁREA"],
+  ["status", "STATUS"],
+  ["valor", "VALOR"],
+  ["recebido", "RECEBIDO"],
+  ["criado", "CRIADO EM"],
+  ["atualizado", "ATUALIZADO EM"],
+  ["proxima", "PRÓXIMA AÇÃO"],
+  ["acoes", ""],
+];
+
+function ResizableTh({ colKey, label, width, onResize, onReset }) {
+  const startDrag = (e) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startWidth = width;
+    const move = (ev) => onResize(colKey, startWidth + ev.clientX - startX);
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      document.body.classList.remove("resizingColumn");
+    };
+    document.body.classList.add("resizingColumn");
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up, { once: true });
+  };
+  const onKeyDown = (e) => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      onResize(colKey, width + (e.key === "ArrowRight" ? 10 : -10));
+    }
+  };
+  return (
+    <th>
+      {label}
+      <span
+        className="colResizer"
+        role="separator"
+        tabIndex={0}
+        aria-label={"Redimensionar coluna " + (label || "ações")}
+        onPointerDown={startDrag}
+        onDoubleClick={() => onReset(colKey)}
+        onKeyDown={onKeyDown}
+      />
+    </th>
+  );
+}
 const sts = [
   "Abordado",
   "Respondeu",
@@ -31,6 +93,16 @@ export default function App() {
     [filter, setFilter] = useState("Todos"),
     [areaFilter, setAreaFilter] = useState("Todas"),
     [sidebarCollapsed, setSidebarCollapsed] = useState(false),
+    [columnWidths, setColumnWidths] = useState(() => {
+      try {
+        return {
+          ...defaultColumnWidths,
+          ...JSON.parse(localStorage.getItem("freela-column-widths") || "{}"),
+        };
+      } catch {
+        return defaultColumnWidths;
+      }
+    }),
     [modal, setModal] = useState(false),
     [form, setForm] = useState({
       empresa: "",
@@ -88,6 +160,24 @@ export default function App() {
         .toLowerCase()
         .includes(q.toLowerCase()),
   );
+  function resizeColumn(key, nextWidth) {
+    const width = Math.max(70, Math.min(420, Math.round(nextWidth)));
+    setColumnWidths((current) => {
+      const next = { ...current, [key]: width };
+      localStorage.setItem("freela-column-widths", JSON.stringify(next));
+      return next;
+    });
+  }
+
+  function resetColumn(key) {
+    resizeColumn(key, defaultColumnWidths[key]);
+  }
+
+  const tableWidth = Object.values(columnWidths).reduce(
+    (sum, width) => sum + width,
+    0,
+  );
+
   async function upd(id, k, v) {
     setLeads((a) => a.map((l) => (l.id === id ? { ...l, [k]: v } : l)));
     const { data } = await supabase
@@ -256,19 +346,24 @@ export default function App() {
             ))}
           </div>
           <div className="tableWrap">
-            <table>
+            <table className="resizableTable" style={{ width: tableWidth }}>
+              <colgroup>
+                {columnDefs.map(([key]) => (
+                  <col key={key} style={{ width: columnWidths[key] }} />
+                ))}
+              </colgroup>
               <thead>
                 <tr>
-                  <th>EMPRESA</th>
-                  <th>CIDADE</th>
-                  <th>ÁREA</th>
-                  <th>STATUS</th>
-                  <th>VALOR</th>
-                  <th>RECEBIDO</th>
-                  <th>CRIADO EM</th>
-                  <th>ATUALIZADO EM</th>
-                  <th>PRÓXIMA AÇÃO</th>
-                  <th />
+                  {columnDefs.map(([key, label]) => (
+                    <ResizableTh
+                      key={key}
+                      colKey={key}
+                      label={label}
+                      width={columnWidths[key]}
+                      onResize={resizeColumn}
+                      onReset={resetColumn}
+                    />
+                  ))}
                 </tr>
               </thead>
               <tbody>

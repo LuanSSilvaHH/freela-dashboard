@@ -902,3 +902,64 @@ aside {
     display: none;
   }
 }
+
+/* Excel-like resizable table columns */
+.resizableTable {
+  table-layout: fixed;
+  min-width: 100%;
+}
+.resizableTable th {
+  position: relative;
+  user-select: none;
+}
+.resizableTable td,
+.resizableTable th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.colResizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 9px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 5;
+  touch-action: none;
+}
+.colResizer::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  left: 4px;
+  width: 1px;
+  background: #3b413d;
+  transition:
+    background 0.15s ease,
+    width 0.15s ease;
+}
+.colResizer:hover::after,
+.colResizer:focus-visible::after {
+  width: 2px;
+  background: #8eaa9a;
+}
+.colResizer:focus-visible {
+  outline: 1px solid #789786;
+  outline-offset: -2px;
+}
+.resizingColumn,
+.resizingColumn * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+.resizableTable .areaInput,
+.resizableTable .status,
+.resizableTable .next,
+.resizableTable .money {
+  width: 100%;
+  min-width: 0;
+}
+.resizableTable .actions {
+  white-space: nowrap;
+}
