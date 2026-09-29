@@ -10,6 +10,8 @@ import {
   Trash2,
   X,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { supabase } from "./supabase";
 import "./App.css";
@@ -28,6 +30,7 @@ export default function App() {
     [q, setQ] = useState(""),
     [filter, setFilter] = useState("Todos"),
     [areaFilter, setAreaFilter] = useState("Todas"),
+    [sidebarCollapsed, setSidebarCollapsed] = useState(false),
     [modal, setModal] = useState(false),
     [form, setForm] = useState({
       empresa: "",
@@ -124,8 +127,19 @@ export default function App() {
     );
   if (!session) return <Login />;
   return (
-    <div className="app">
+    <div className={`app ${sidebarCollapsed ? "sidebarCollapsed" : ""}`}>
       <aside>
+        <button
+          className="sidebarToggle"
+          onClick={() => setSidebarCollapsed((v) => !v)}
+          title={sidebarCollapsed ? "Expandir menu" : "Minimizar menu"}
+        >
+          {sidebarCollapsed ? (
+            <PanelLeftOpen size={18} />
+          ) : (
+            <PanelLeftClose size={18} />
+          )}
+        </button>
         <div className="brand">
           <strong>LS</strong>
           <div>

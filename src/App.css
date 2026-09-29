@@ -818,3 +818,87 @@ td {
   color: #758089;
   min-width: 118px;
 }
+
+/* Layout fix + collapsible sidebar */
+.app {
+  grid-template-columns: 230px minmax(0, 1fr);
+  transition: grid-template-columns 0.22s ease;
+}
+main {
+  min-width: 0;
+  max-width: none;
+}
+.pipeline,
+.tableWrap {
+  min-width: 0;
+  max-width: 100%;
+}
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.tableWrap table {
+  width: max-content;
+  min-width: 100%;
+}
+aside {
+  transition:
+    width 0.22s ease,
+    padding 0.22s ease;
+  z-index: 20;
+}
+.sidebarToggle {
+  position: absolute;
+  top: 18px;
+  right: -14px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #343936;
+  background: #1b1e1c;
+  color: #aeb8b2;
+  cursor: pointer;
+  z-index: 30;
+}
+.sidebarToggle:hover {
+  border-color: #789786;
+  color: #c9d8d0;
+}
+.sidebarCollapsed {
+  grid-template-columns: 74px minmax(0, 1fr);
+}
+.sidebarCollapsed aside {
+  width: 74px;
+  padding: 34px 14px;
+}
+.sidebarCollapsed .brand {
+  justify-content: center;
+}
+.sidebarCollapsed .brand > div,
+.sidebarCollapsed nav a {
+  font-size: 0;
+}
+.sidebarCollapsed nav a {
+  justify-content: center;
+  padding: 12px 8px;
+}
+.sidebarCollapsed nav a em {
+  display: none;
+}
+.sidebarCollapsed .brand + nav {
+  margin-top: 58px;
+}
+.sidebarCollapsed .asideGoal {
+  display: none;
+}
+.sidebarCollapsed .sidebarToggle {
+  right: -14px;
+}
+@media (max-width: 900px) {
+  .sidebarToggle {
+    display: none;
+  }
+}
